@@ -140,7 +140,7 @@ def seed_initial_database():
                 except Exception:
                     db.rollback()
 
-        # Seed Patient Medicines
+        # Seed Patient Medicines and Medication Logs
         if patient_user:
             med_count = db.query(models.Medicine).filter(models.Medicine.user_id == patient_user.id).count()
             if med_count == 0:
@@ -155,6 +155,39 @@ def seed_initial_database():
                 ]
                 for m in sample_meds:
                     db.add(m)
+                try:
+                    db.commit()
+                except Exception:
+                    db.rollback()
+
+            # Seed Medication Logs
+            log_count = db.query(models.MedicationLog).filter(models.MedicationLog.user_id == patient_user.id).count()
+            if log_count == 0:
+                sample_logs = [
+                    models.MedicationLog(user_id=patient_user.id, medicine_name="Pantop 40", status="taken", logged_at=datetime.datetime.utcnow() - datetime.timedelta(hours=6)),
+                    models.MedicationLog(user_id=patient_user.id, medicine_name="Glycomet SR 500", status="taken", logged_at=datetime.datetime.utcnow() - datetime.timedelta(hours=5)),
+                    models.MedicationLog(user_id=patient_user.id, medicine_name="Glucored Forte", status="taken", logged_at=datetime.datetime.utcnow() - datetime.timedelta(hours=4)),
+                    models.MedicationLog(user_id=patient_user.id, medicine_name="Lonezep 1mg", status="taken", logged_at=datetime.datetime.utcnow() - datetime.timedelta(hours=3)),
+                    models.MedicationLog(user_id=patient_user.id, medicine_name="Lecalm Plus", status="taken", logged_at=datetime.datetime.utcnow() - datetime.timedelta(hours=2)),
+                    models.MedicationLog(user_id=patient_user.id, medicine_name="Divalproex ER 250", status="taken", logged_at=datetime.datetime.utcnow() - datetime.timedelta(hours=1)),
+                    models.MedicationLog(user_id=patient_user.id, medicine_name="Atos 10", status="taken", logged_at=datetime.datetime.utcnow())
+                ]
+                for l in sample_logs:
+                    db.add(l)
+                try:
+                    db.commit()
+                except Exception:
+                    db.rollback()
+
+            # Seed Audit Logs
+            audit_count = db.query(models.AuditLog).count()
+            if audit_count == 0:
+                sample_audits = [
+                    models.AuditLog(user_id=patient_user.id, action="Logged Doses Batch", event_type="dose", target="Medication Checklist", details="Marked 7 scheduled doses as taken"),
+                    models.AuditLog(user_id=admin_user.id if admin_user else 1, action="System Maintenance", event_type="system", target="Database", details="Auto-initialized PillSync Healthcare SaaS Admin platform")
+                ]
+                for a in sample_audits:
+                    db.add(a)
                 try:
                     db.commit()
                 except Exception:
