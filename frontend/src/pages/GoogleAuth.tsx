@@ -154,7 +154,7 @@ export default function GoogleAuth({ onLoginSuccess }: GoogleAuthProps) {
         {step === 'send' ? (
           <form onSubmit={handleSendOTP} className="space-y-5">
             <div>
-              <label className="block text-xs font-black text-cyan-300 uppercase tracking-wider mb-2">
+              <label htmlFor="google-email-input" className="block text-xs font-black text-cyan-300 uppercase tracking-wider mb-2">
                 Google Email Address
               </label>
               <div className="relative">
@@ -162,6 +162,8 @@ export default function GoogleAuth({ onLoginSuccess }: GoogleAuthProps) {
                   <Mail className="h-5 w-5" />
                 </span>
                 <input
+                  id="google-email-input"
+                  name="email"
                   type="email"
                   required
                   value={email}

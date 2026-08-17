@@ -192,7 +192,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-black text-cyan-300 uppercase tracking-wider mb-2">
+              <label htmlFor="login-email" className="block text-xs font-black text-cyan-300 uppercase tracking-wider mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -200,6 +200,8 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                   <Mail className="h-5 w-5" />
                 </span>
                 <input
+                  id="login-email"
+                  name="email"
                   type="email"
                   required
                   value={email}
@@ -212,7 +214,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="block text-xs font-black text-cyan-300 uppercase tracking-wider">
+                <label htmlFor="login-password" className="block text-xs font-black text-cyan-300 uppercase tracking-wider">
                   Password
                 </label>
                 <Link to="/forgot-password" className="text-xs text-cyan-400 hover:text-cyan-300 hover:underline font-extrabold">
@@ -224,6 +226,8 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                   <Lock className="h-5 w-5" />
                 </span>
                 <input
+                  id="login-password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
