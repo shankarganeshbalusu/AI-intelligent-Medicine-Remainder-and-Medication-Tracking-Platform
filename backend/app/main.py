@@ -119,7 +119,17 @@ async def startup_event():
     seed_initial_database()
     asyncio.create_task(email_worker.check_and_send_reminders())
 
+@app.get("/")
+def root_check():
+    return {
+        "status": "online",
+        "service": "PillSync Backend REST API",
+        "docs": "/docs",
+        "health": "/health"
+    }
+
 @app.get("/health")
+@app.get("/api/health")
 def health_check():
     return {"status": "healthy", "service": "pillsync-backend"}
 

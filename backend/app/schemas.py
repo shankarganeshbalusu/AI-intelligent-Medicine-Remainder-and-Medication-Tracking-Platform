@@ -19,7 +19,7 @@ class UserResponse(UserBase):
         from_attributes = True
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: str
     password: str
 
 class Token(BaseModel):
@@ -130,37 +130,37 @@ class MedicationLogResponse(BaseModel):
 
 
 class GoogleAuthRequest(BaseModel):
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None
     name: Optional[str] = None
     role: Optional[str] = "patient"
     credential: Optional[str] = None
 
 class GoogleSendOTPRequest(BaseModel):
-    email: EmailStr
+    email: str
     role: Optional[str] = "patient"
 
 class GoogleVerifyOTPRequest(BaseModel):
-    email: EmailStr
+    email: str
     otp_code: str
     role: Optional[str] = "patient"
 
 class VerifyEmailRequest(BaseModel):
-    email: EmailStr
+    email: str
     token: str
 
 
 class ForgotPasswordRequest(BaseModel):
-    email: EmailStr
+    email: str
 
 
 class ResetPasswordRequest(BaseModel):
-    email: EmailStr
+    email: str
     token: str
     new_password: str
 
 
 class TestEmailRequest(BaseModel):
-    email: EmailStr
+    email: str
 
 
 class ChatBotRequest(BaseModel):
