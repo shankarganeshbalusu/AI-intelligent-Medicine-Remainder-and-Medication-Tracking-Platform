@@ -7,7 +7,10 @@ from app import email_worker
 import asyncio
 
 # Auto-create SQLite database tables on startup
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as db_err:
+    print("[DB CREATION WARNING]", db_err)
 
 app = FastAPI(
     title="PillSync: Medication Reminder and Adherence Platform",
