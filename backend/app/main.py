@@ -24,6 +24,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from fastapi import Request
+from fastapi.responses import Response
+
+@app.middleware("http")
+async def head_request_middleware(request: Request, call_next):
+    if request.method == "HEAD":
+        return Response(status_code=200)
+    return await call_next(request)
+
 # Register endpoints routers
 app.include_router(auth.router, prefix="/api")
 app.include_router(users.router, prefix="/api")
