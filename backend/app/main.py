@@ -30,8 +30,93 @@ app.include_router(users.router, prefix="/api")
 app.include_router(medicines.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
 
+def seed_initial_database():
+    try:
+        from app.database import SessionLocal
+        from app import models, auth
+        db = SessionLocal()
+        
+        # Seed Admin
+        admin_user = db.query(models.User).filter(models.User.email == "admin@pillsync.com").first()
+        if not admin_user:
+            admin_user = models.User(
+                name="System Administrator",
+                email="admin@pillsync.com",
+                notification_email="admin@pillsync.com",
+                password_hash=auth.get_password_hash("AdminPillSync123!"),
+                role="admin",
+                is_verified=True
+            )
+            db.add(admin_user)
+            db.commit()
+
+        # Seed Patient
+        patient_user = db.query(models.User).filter(models.User.email == "shankarganeshbalusu@gmail.com").first()
+        if not patient_user:
+            patient_user = models.User(
+                name="Shankar Ganesh",
+                email="shankarganeshbalusu@gmail.com",
+                notification_email="shankarganeshbalusu@gmail.com",
+                password_hash=auth.get_password_hash("Patient123!"),
+                role="patient",
+                is_verified=True
+            )
+            db.add(patient_user)
+            db.commit()
+        else:
+            patient_user.is_verified = True
+            db.commit()
+
+        # Seed Caregiver
+        caregiver_user = db.query(models.User).filter(models.User.email == "maths4412@gmail.com").first()
+        if not caregiver_user:
+            caregiver_user = models.User(
+                name="Maths Caregiver",
+                email="maths4412@gmail.com",
+                notification_email="maths4412@gmail.com",
+                password_hash=auth.get_password_hash("Caregiver123!"),
+                role="caregiver",
+                is_verified=True
+            )
+            db.add(caregiver_user)
+            db.commit()
+        else:
+            caregiver_user.is_verified = True
+            db.commit()
+
+        # Link Patient & Caregiver
+        link = db.query(models.PatientCaregiver).filter(
+            models.PatientCaregiver.patient_id == patient_user.id,
+            models.PatientCaregiver.caregiver_id == caregiver_user.id
+        ).first()
+        if not link:
+            link = models.PatientCaregiver(patient_id=patient_user.id, caregiver_id=caregiver_user.id, status="active")
+            db.add(link)
+            db.commit()
+
+        # Emergency info
+        emg = db.query(models.EmergencyInfo).filter(models.EmergencyInfo.user_id == patient_user.id).first()
+        if not emg:
+            emg = models.EmergencyInfo(
+                user_id=patient_user.id,
+                blood_group="O+",
+                emergency_contact_name="Ramesh Balusu",
+                emergency_contact_phone="+91 9876543210",
+                contact_relationship="Father",
+                allergies="Penicillin",
+                medical_conditions="Mild Asthma",
+                doctor_name="Dr. V. K. Sharma",
+                doctor_phone="+91 9123456789"
+            )
+            db.add(emg)
+            db.commit()
+        db.close()
+    except Exception as err:
+        print("[AUTO-SEED WARNING]", err)
+
 @app.on_event("startup")
 async def startup_event():
+    seed_initial_database()
     asyncio.create_task(email_worker.check_and_send_reminders())
 
 @app.get("/health")
