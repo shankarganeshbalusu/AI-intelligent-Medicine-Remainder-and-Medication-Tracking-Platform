@@ -140,16 +140,27 @@ export default function Dashboard() {
 
   const handleActionDose = async (reminderId: number, outcome: 'taken' | 'missed') => {
     setActioningId(reminderId);
+
+    // Optimistically update reminders state in 0ms for instant UI feedback
+    setReminders(prev => prev.map(r => r.id === reminderId ? { ...r, status: outcome } : r));
+
+    // Optimistically add to adherence log history
+    const targetRem = reminders.find(r => r.id === reminderId);
+    const newLog: MedicationLog = {
+      id: Date.now(),
+      medicine_id: targetRem ? targetRem.medicine_id : reminderId,
+      medicine_name: targetRem ? targetRem.medicine_name : 'Medication',
+      timestamp: new Date().toISOString(),
+      status: outcome
+    };
+    const updatedLogs = [newLog, ...logs];
+    setLogs(updatedLogs);
+    calculateCompliance(updatedLogs);
+
     try {
       await medicinesService.updateReminderStatus(reminderId, outcome);
-      
-      // Refresh patient data
-      const targetId = isPatient ? profile?.id : (selectedPatientId as number);
-      if (targetId) {
-        await fetchPatientData(targetId);
-      }
     } catch (err) {
-      console.error('Failed to log reminder outcome', err);
+      console.error('Failed to log reminder outcome on backend', err);
     } finally {
       setActioningId(null);
     }
@@ -486,13 +497,17 @@ export default function Dashboard() {
                               </button>
                             </div>
                           ) : (
-                            <span className={`text-xs px-3 py-1 rounded-full font-black border uppercase tracking-wider ${
-                              isTaken
-                                ? 'bg-green-500/20 border-green-500/40 text-green-300'
-                                : 'bg-red-500/20 border-red-500/40 text-red-300'
-                            }`}>
-                              {isTaken ? 'Taken' : 'Missed'}
-                            </span>
+                            <button
+                              onClick={() => handleActionDose(rem.id, isTaken ? 'missed' : 'taken')}
+                              className={`text-xs px-3 py-1 rounded-full font-black border uppercase tracking-wider cursor-pointer hover:opacity-80 transition-all ${
+                                isTaken
+                                  ? 'bg-green-500/20 border-green-500/40 text-green-300'
+                                  : 'bg-red-500/20 border-red-500/40 text-red-300'
+                              }`}
+                              title="Click to toggle dose status"
+                            >
+                              {isTaken ? '✓ Taken' : '✕ Missed'}
+                            </button>
                           )
                         ) : (
                           /* Caregiver Read-only tags */
