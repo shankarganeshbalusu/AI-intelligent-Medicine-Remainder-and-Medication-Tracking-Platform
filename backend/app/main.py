@@ -34,10 +34,11 @@ def seed_initial_database():
     try:
         from app.database import SessionLocal
         from app import models, auth
+        from sqlalchemy import func
         db = SessionLocal()
         
         # Seed Admin
-        admin_user = db.query(models.User).filter(models.User.email == "admin@pillsync.com").first()
+        admin_user = db.query(models.User).filter(func.lower(models.User.email) == "admin@pillsync.com").first()
         if not admin_user:
             admin_user = models.User(
                 name="System Administrator",
@@ -48,10 +49,20 @@ def seed_initial_database():
                 is_verified=True
             )
             db.add(admin_user)
-            db.commit()
+            try:
+                db.commit()
+            except Exception:
+                db.rollback()
+        else:
+            admin_user.password_hash = auth.get_password_hash("AdminPillSync123!")
+            admin_user.is_verified = True
+            try:
+                db.commit()
+            except Exception:
+                db.rollback()
 
         # Seed Patient
-        patient_user = db.query(models.User).filter(models.User.email == "shankarganeshbalusu@gmail.com").first()
+        patient_user = db.query(models.User).filter(func.lower(models.User.email) == "shankarganeshbalusu@gmail.com").first()
         if not patient_user:
             patient_user = models.User(
                 name="Shankar Ganesh",
@@ -62,13 +73,20 @@ def seed_initial_database():
                 is_verified=True
             )
             db.add(patient_user)
-            db.commit()
+            try:
+                db.commit()
+            except Exception:
+                db.rollback()
         else:
+            patient_user.password_hash = auth.get_password_hash("Patient123!")
             patient_user.is_verified = True
-            db.commit()
+            try:
+                db.commit()
+            except Exception:
+                db.rollback()
 
         # Seed Caregiver
-        caregiver_user = db.query(models.User).filter(models.User.email == "maths4412@gmail.com").first()
+        caregiver_user = db.query(models.User).filter(func.lower(models.User.email) == "maths4412@gmail.com").first()
         if not caregiver_user:
             caregiver_user = models.User(
                 name="Maths Caregiver",
@@ -79,37 +97,52 @@ def seed_initial_database():
                 is_verified=True
             )
             db.add(caregiver_user)
-            db.commit()
+            try:
+                db.commit()
+            except Exception:
+                db.rollback()
         else:
+            caregiver_user.password_hash = auth.get_password_hash("Caregiver123!")
             caregiver_user.is_verified = True
-            db.commit()
+            try:
+                db.commit()
+            except Exception:
+                db.rollback()
 
         # Link Patient & Caregiver
-        link = db.query(models.PatientCaregiver).filter(
-            models.PatientCaregiver.patient_id == patient_user.id,
-            models.PatientCaregiver.caregiver_id == caregiver_user.id
-        ).first()
-        if not link:
-            link = models.PatientCaregiver(patient_id=patient_user.id, caregiver_id=caregiver_user.id, status="active")
-            db.add(link)
-            db.commit()
+        if patient_user and caregiver_user:
+            link = db.query(models.PatientCaregiver).filter(
+                models.PatientCaregiver.patient_id == patient_user.id,
+                models.PatientCaregiver.caregiver_id == caregiver_user.id
+            ).first()
+            if not link:
+                link = models.PatientCaregiver(patient_id=patient_user.id, caregiver_id=caregiver_user.id, status="active")
+                db.add(link)
+                try:
+                    db.commit()
+                except Exception:
+                    db.rollback()
 
         # Emergency info
-        emg = db.query(models.EmergencyInfo).filter(models.EmergencyInfo.user_id == patient_user.id).first()
-        if not emg:
-            emg = models.EmergencyInfo(
-                user_id=patient_user.id,
-                blood_group="O+",
-                emergency_contact_name="Ramesh Balusu",
-                emergency_contact_phone="+91 9876543210",
-                contact_relationship="Father",
-                allergies="Penicillin",
-                medical_conditions="Mild Asthma",
-                doctor_name="Dr. V. K. Sharma",
-                doctor_phone="+91 9123456789"
-            )
-            db.add(emg)
-            db.commit()
+        if patient_user:
+            emg = db.query(models.EmergencyInfo).filter(models.EmergencyInfo.user_id == patient_user.id).first()
+            if not emg:
+                emg = models.EmergencyInfo(
+                    user_id=patient_user.id,
+                    blood_group="O+",
+                    emergency_contact_name="Ramesh Balusu",
+                    emergency_contact_phone="+91 9876543210",
+                    contact_relationship="Father",
+                    allergies="Penicillin",
+                    medical_conditions="Mild Asthma",
+                    doctor_name="Dr. V. K. Sharma",
+                    doctor_phone="+91 9123456789"
+                )
+                db.add(emg)
+                try:
+                    db.commit()
+                except Exception:
+                    db.rollback()
         db.close()
     except Exception as err:
         print("[AUTO-SEED WARNING]", err)
