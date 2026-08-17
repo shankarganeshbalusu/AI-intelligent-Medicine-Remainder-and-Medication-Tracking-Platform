@@ -225,24 +225,35 @@ from sqlalchemy import func, or_
 @router.post("/google-send-otp")
 def google_send_otp(req: schemas.GoogleSendOTPRequest, db: Session = Depends(get_db)):
     clean_email = req.email.strip().lower()
+    target_role = (req.role or "patient").strip().lower()
     
-    # Query across primary email and notification_email for both Patient & Caregiver accounts
+    # Query specifically for account matching primary email AND target role
     user = db.query(models.User).filter(
-        or_(
-            func.lower(models.User.email) == clean_email,
-            func.lower(models.User.notification_email) == clean_email
-        )
+        func.lower(models.User.email) == clean_email,
+        models.User.role == target_role
     ).first()
     
-    print(f"[AUTH] Google email: {clean_email}")
-    if user:
-        print(f"[AUTH] Existing user found: ID={user.id} Role={user.role} Email={user.email}")
+    if not user:
+        user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
         
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Invalid mail ID"
+        # Auto-create Caregiver/Patient account on the fly if not registered
+        user_name = clean_email.split('@')[0].replace('.', ' ').title()
+        user = models.User(
+            name=f"{user_name} ({target_role.capitalize()})",
+            email=clean_email,
+            notification_email=clean_email,
+            password_hash=auth.get_password_hash("Caregiver123!" if target_role == "caregiver" else "Patient123!"),
+            role=target_role,
+            is_verified=True
         )
+        db.add(user)
+        try:
+            db.commit()
+            db.refresh(user)
+        except Exception:
+            db.rollback()
+            user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
     
     # Generate 6-digit OTP
     otp_code = f"{random.randint(100000, 999999)}"
@@ -256,13 +267,13 @@ def google_send_otp(req: schemas.GoogleSendOTPRequest, db: Session = Depends(get
 
     # Dispatch verification email directly to the specified clean_email
     from app.email_worker import FRONTEND_URL, send_email_async
-    direct_link = f"{FRONTEND_URL}/google-auth?email={clean_email}&otp={otp_code}"
+    direct_link = f"{FRONTEND_URL}/google-auth?email={clean_email}&otp={otp_code}&role={target_role}"
     subject = f"🔑 Google Authentication OTP Code: {otp_code} — PillSync"
     html_body = f"""
     <div style="font-family: Arial, sans-serif; background-color: #0b0f19; color: #ffffff; padding: 25px; border-radius: 16px;">
       <h2 style="color: #06b6d4; margin-bottom: 10px;">Google Single Sign-On Verification</h2>
       <p>Hello <strong>{user.name}</strong>,</p>
-      <p>Your 6-digit Google Authentication Security OTP Code is:</p>
+      <p>Your 6-digit Google Authentication Security OTP Code for your <strong>{target_role.upper()}</strong> account is:</p>
       <div style="background-color: #1e293b; color: #38bdf8; font-size: 32px; font-weight: bold; letter-spacing: 6px; padding: 15px 25px; border-radius: 12px; display: inline-block; margin: 15px 0;">
         {otp_code}
       </div>
@@ -279,34 +290,50 @@ def google_send_otp(req: schemas.GoogleSendOTPRequest, db: Session = Depends(get
         "message": f"Verification code sent to {clean_email}. Please check your email inbox."
     }
 
+
 @router.post("/google-verify-otp", response_model=schemas.Token)
 def google_verify_otp(req: schemas.GoogleVerifyOTPRequest, db: Session = Depends(get_db)):
     clean_email = req.email.strip().lower()
+    target_role = (req.role or "patient").strip().lower()
+    
     user = db.query(models.User).filter(
-        or_(
-            func.lower(models.User.email) == clean_email,
-            func.lower(models.User.notification_email) == clean_email
-        )
+        func.lower(models.User.email) == clean_email,
+        models.User.role == target_role
     ).first()
     
     if not user:
+        user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
+        
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Invalid mail ID"
+            detail="Account not found. Please click Send Verification Code first."
         )
-    
+        
+    # Check OTP code
     if not user.google_otp_code or user.google_otp_code != req.otp_code.strip():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid or expired OTP verification code."
+            detail="Invalid 6-digit OTP code. Please check your email inbox and try again."
         )
         
-    # Mark user verified and clear OTP
-    user.is_verified = True
+    # Check expiration
+    if user.google_otp_expiry and datetime.datetime.utcnow() > user.google_otp_expiry:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="OTP code has expired. Please request a new verification code."
+        )
+        
+    # Clear OTP upon successful verification
     user.google_otp_code = None
     user.google_otp_expiry = None
+    user.is_verified = True
+    if req.role in ["patient", "caregiver"]:
+        user.role = req.role
+        
     db.commit()
-
+    db.refresh(user)
+    
     access_token = auth.create_access_token(data={"sub": user.email, "role": user.role})
     
     return {
