@@ -342,12 +342,15 @@ def get_admin_medicines(
             models.User.name.ilike(search_fmt)
         ))
 
-    if status_filter == "active":
-        query = query.filter(models.Medicine.is_archived == False)
-    elif status_filter == "completed":
-        query = query.filter(models.Medicine.is_archived == True, models.Medicine.discontinue_reason.ilike("%completed%"))
-    elif status_filter == "discontinued":
-        query = query.filter(models.Medicine.is_archived == True, ~models.Medicine.discontinue_reason.ilike("%completed%"))
+    if status_filter and status_filter.lower() != "all":
+        if status_filter == "active":
+            query = query.filter(models.Medicine.is_archived == False)
+        elif status_filter == "completed":
+            query = query.filter(models.Medicine.is_archived == True, models.Medicine.discontinue_reason.ilike("%completed%"))
+        elif status_filter == "discontinued":
+            query = query.filter(models.Medicine.is_archived == True, ~models.Medicine.discontinue_reason.ilike("%completed%"))
+        elif status_filter == "low_stock":
+            query = query.filter(models.Medicine.quantity <= 5)
 
     medicines = query.order_by(models.Medicine.created_at.desc()).all()
 

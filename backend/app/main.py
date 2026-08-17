@@ -140,6 +140,26 @@ def seed_initial_database():
                 except Exception:
                     db.rollback()
 
+        # Seed Patient Medicines
+        if patient_user:
+            med_count = db.query(models.Medicine).filter(models.Medicine.user_id == patient_user.id).count()
+            if med_count == 0:
+                sample_meds = [
+                    models.Medicine(user_id=patient_user.id, name="Pantop 40", dosage="40mg", quantity=30, times_per_day=1, custom_times="08:00", duration_days=30, days_of_week="Daily", food_relation="Before Breakfast", is_archived=False),
+                    models.Medicine(user_id=patient_user.id, name="Glycomet SR 500", dosage="500mg", quantity=60, times_per_day=2, custom_times="09:00,21:00", duration_days=30, days_of_week="Daily", food_relation="After Meals", is_archived=False),
+                    models.Medicine(user_id=patient_user.id, name="Glucored Forte", dosage="5mg/500mg", quantity=30, times_per_day=1, custom_times="09:00", duration_days=30, days_of_week="Daily", food_relation="After Breakfast", is_archived=False),
+                    models.Medicine(user_id=patient_user.id, name="Lonezep 1mg", dosage="1mg", quantity=15, times_per_day=1, custom_times="22:00", duration_days=15, days_of_week="Daily", food_relation="Before Bed", is_archived=False),
+                    models.Medicine(user_id=patient_user.id, name="Lecalm Plus", dosage="5mg", quantity=30, times_per_day=1, custom_times="21:30", duration_days=30, days_of_week="Daily", food_relation="After Dinner", is_archived=False),
+                    models.Medicine(user_id=patient_user.id, name="Divalproex ER 250", dosage="250mg", quantity=30, times_per_day=1, custom_times="22:00", duration_days=30, days_of_week="Daily", food_relation="Before Bed", is_archived=False),
+                    models.Medicine(user_id=patient_user.id, name="Atos 10", dosage="10mg", quantity=30, times_per_day=1, custom_times="21:00", duration_days=30, days_of_week="Daily", food_relation="After Dinner", is_archived=False)
+                ]
+                for m in sample_meds:
+                    db.add(m)
+                try:
+                    db.commit()
+                except Exception:
+                    db.rollback()
+
         # Emergency info
         if patient_user:
             emg = db.query(models.EmergencyInfo).filter(models.EmergencyInfo.user_id == patient_user.id).first()
