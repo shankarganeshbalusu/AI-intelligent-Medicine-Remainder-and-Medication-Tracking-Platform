@@ -18,8 +18,15 @@ SMTP_USER = os.getenv("SMTP_USER", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
 SENDER_EMAIL = os.getenv("SENDER_EMAIL", "noreply@pillsync.com")
 
-# Frontend platform URL for login links
-LOGIN_URL = os.getenv("FRONTEND_URL", "http://localhost:5173") + "/login"
+# Frontend platform URL for live mobile and desktop email links
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://ai-intelligent-medicine-remainder-a.vercel.app").rstrip("/")
+LOGIN_URL = FRONTEND_URL + "/login"
+
+import threading
+
+def send_email_async(to_email: str, subject: str, html_body: str):
+    """Dispatches email sending in a non-blocking background thread so API calls return instantly (<0.1s)."""
+    threading.Thread(target=send_email_notification, args=(to_email, subject, html_body), daemon=True).start()
 
 
 def send_email_notification(to_email: str, subject: str, html_body: str):

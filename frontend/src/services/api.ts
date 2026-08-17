@@ -1,7 +1,13 @@
-import axios from 'axios';
+const getApiUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.startsWith('http') && !envUrl.includes('_pp')) {
+    return envUrl;
+  }
+  return 'https://pillsync-backend-api.vercel.app/api';
+};
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://pillsync-backend-api.vercel.app/api',
+  baseURL: getApiUrl(),
   headers: {
     'Content-Type': 'application/json',
   },

@@ -36,11 +36,16 @@ async def head_request_middleware(request: Request, call_next):
         return Response(status_code=200)
     return await call_next(request)
 
-# Register endpoints routers
+# Register endpoints routers with both /api and root prefixes for Vercel Serverless routing compatibility
 app.include_router(auth.router, prefix="/api")
 app.include_router(users.router, prefix="/api")
 app.include_router(medicines.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
+
+app.include_router(auth.router)
+app.include_router(users.router)
+app.include_router(medicines.router)
+app.include_router(admin.router)
 
 def seed_initial_database():
     try:
