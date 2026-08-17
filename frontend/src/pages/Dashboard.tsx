@@ -156,6 +156,9 @@ export default function Dashboard() {
     const updatedLogs = [newLog, ...logs];
     setLogs(updatedLogs);
     calculateCompliance(updatedLogs);
+    try {
+      localStorage.setItem('pillsync_cached_logs', JSON.stringify(updatedLogs));
+    } catch (e) {}
 
     try {
       await medicinesService.updateReminderStatus(reminderId, outcome);

@@ -35,8 +35,18 @@ export default function History() {
     try {
       setLoading(true);
       if (isPatient) {
-        const list = await medicinesService.getMedicationLogs();
-        setLogs(list);
+        let list = await medicinesService.getMedicationLogs();
+        if (list && list.length > 0) {
+          setLogs(list);
+          localStorage.setItem('pillsync_cached_logs', JSON.stringify(list));
+        } else {
+          const cached = localStorage.getItem('pillsync_cached_logs');
+          if (cached) {
+            try { setLogs(JSON.parse(cached)); } catch (e) { setLogs(list || []); }
+          } else {
+            setLogs(list || []);
+          }
+        }
       } else {
         const associations = await usersService.getAssociations();
         const activeLinks = associations.filter(a => a.status === 'active');
@@ -50,6 +60,10 @@ export default function History() {
       }
     } catch (err) {
       console.error('Failed to load logs', err);
+      const cached = localStorage.getItem('pillsync_cached_logs');
+      if (cached) {
+        try { setLogs(JSON.parse(cached)); } catch (e) {}
+      }
     } finally {
       setLoading(false);
     }
