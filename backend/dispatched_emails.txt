@@ -1,0 +1,105 @@
+[2026-08-13T21:40:46.242592] TO: shankarganeshbalusu@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 637128 — PillSync
+[2026-08-13T21:49:45.403225] TO: shankarganeshbalusu@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 378974 — PillSync
+[2026-08-13T21:50:12.909369] TO: shankarganeshbalusu@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 638971 — PillSync
+[2026-08-13T21:50:16.399469] TO: shankarganeshbalusu@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 275907 — PillSync
+[2026-08-13T21:51:47.767870] TO: maths4412@gmail.com | SUBJECT: 🔔 PillSync Live Alert Test for maths4412@gmail.com
+[2026-08-14T07:26:04.399175] TO: nikhilreddymodugu123@gmail.com | SUBJECT: PillSync — Missed Medication Alert
+[2026-08-14T07:35:09.217422] TO: shankarganeshbalusu@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 300382 — PillSync
+[2026-08-14T07:46:22.674757] TO: shankarganeshbalusu@gmail.com | SUBJECT: PillSync — Medication Reminder
+[2026-08-14T07:46:26.335493] TO: maths4412@gmail.com | SUBJECT: PillSync — Scheduled Dose Alert for shankar
+[2026-08-14T07:52:30.770164] TO: shankarganeshbalusu@gmail.com | SUBJECT: PillSync — Medication Reminder
+[2026-08-14T07:52:34.551650] TO: maths4412@gmail.com | SUBJECT: PillSync — Scheduled Dose Alert for shankar
+[2026-08-14T17:55:17.901998] TO: shankarganeshbalusu@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 922613 — PillSync
+[2026-08-14T18:58:29.355071] TO: shankarganeshbalusu@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 640200 — PillSync
+[2026-08-14T19:01:15.703854] TO: maths4412@gmail.com | SUBJECT: PillSync — Missed Medication Alert for shankar
+[2026-08-14T19:01:19.708531] TO: maths4412@gmail.com | SUBJECT: PillSync — Missed Medication Alert for shankar
+[2026-08-14T19:01:23.451809] TO: maths4412@gmail.com | SUBJECT: PillSync — Missed Medication Alert for shankar
+[2026-08-14T19:01:27.226712] TO: maths4412@gmail.com | SUBJECT: PillSync — Missed Medication Alert for shankar
+[2026-08-15T09:20:54.344370] TO: sbalusu4@gitam.in | SUBJECT: 🔑 PillSync: Password Reset Request
+[2026-08-15T09:22:41.970251] TO: sbalusu4@gitam.in | SUBJECT: 🔑 Google Authentication OTP Code: 146946 — PillSync
+[2026-08-15T09:49:30.849551] TO: maths4412@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 167590 — PillSync
+[2026-08-15T09:51:36.595832] TO: maths4412@gmail.com | SUBJECT: 🔔 PillSync Live Alert Test for maths4412@gmail.com
+[2026-08-15T10:06:56.140953] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:12:01.181229] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:07.754029] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:12.002750] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:34.911122] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:34.918379] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:38.747495] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:39.190479] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:42.553099] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:43.267695] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:46.526372] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:22:47.366640] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:23:15.657807] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:23:19.797911] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:24:23.528125] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:24:27.799471] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:24:45.002352] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:13.087655] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:16.950628] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:21.269818] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:25.244002] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:29.253872] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:31.879930] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:33.334658] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:35.894485] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:40.109478] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:25:44.291908] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:26:40.113023] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:26:44.193381] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:27:48.508278] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:27:52.388797] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:27:58.265214] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:28:02.230296] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:28:08.547449] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:28:12.052994] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:28:17.818418] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:28:21.347676] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:28:28.118683] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:28:32.124618] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:29:51.417618] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:29:55.374137] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:47:52.067922] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:47:55.764258] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:50:59.451733] TO: maths4412@gmail.com | SUBJECT: PillSync — Missed Medication Alert for shankar
+[2026-08-15T10:54:52.307906] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:54:56.163433] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:55:03.844102] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T10:55:07.516730] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T11:02:22.596388] TO: maths4412@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 274211 — PillSync
+[2026-08-15T11:06:21.199472] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T11:06:24.980244] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T17:04:57.611888] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T17:05:01.985536] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T17:16:01.188132] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T17:16:05.120082] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T17:24:07.773413] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T17:24:11.544599] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T17:27:09.904346] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T17:27:13.858978] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-15T18:56:18.943529] TO: maths4412@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 826668 — PillSync
+[2026-08-15T18:58:24.632994] TO: maths4412@gmail.com | SUBJECT: 🔑 PillSync: Password Reset Request
+[2026-08-15T19:01:10.397097] TO: maths4412@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 556361 — PillSync
+[2026-08-15T19:14:07.568380] TO: shankarganeshbalusu@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 962159 — PillSync
+[2026-08-15T19:19:53.106706] TO: maths4412@gmail.com | SUBJECT: PillSync — Missed Medication Alert for shankar
+[2026-08-15T19:19:56.798305] TO: maths4412@gmail.com | SUBJECT: PillSync — Missed Medication Alert for shankar
+[2026-08-15T19:20:00.293922] TO: maths4412@gmail.com | SUBJECT: PillSync — Missed Medication Alert for shankar
+[2026-08-15T19:20:04.332696] TO: maths4412@gmail.com | SUBJECT: PillSync — Missed Medication Alert for shankar
+[2026-08-15T19:49:01.450211] TO: maths4412@gmail.com | SUBJECT: ✉️ PillSync: Verify Your Email Address
+[2026-08-15T19:50:13.777990] TO: maths4412@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 807464 — PillSync
+[2026-08-15T19:51:59.423773] TO: maths4412@gmail.com | SUBJECT: 🔑 Google Authentication OTP Code: 322659 — PillSync
+[2026-08-16T00:12:14.037897] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T00:12:19.231221] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T16:21:32.625823] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T16:21:36.793296] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T16:24:15.537374] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T16:24:19.695294] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T16:24:36.124088] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T16:24:40.264501] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T16:24:59.904847] TO: maths4412@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T16:25:03.732834] TO: shankarganeshbalusu@gmail.com | SUBJECT: ⚠️ PillSync — Refill Mail for Your Medicines (Stock Completing)
+[2026-08-16T21:00:17.831427] TO: maths4412@gmail.com | SUBJECT: PillSync — Medication Reminder
+[2026-08-16T21:00:21.704257] TO: maths4412@gmail.com | SUBJECT: PillSync — Medication Reminder
+[2026-08-16T21:00:27.205835] TO: maths4412@gmail.com | SUBJECT: PillSync — Medication Reminder
+[2026-08-16T21:00:31.076567] TO: maths4412@gmail.com | SUBJECT: PillSync — Medication Reminder
