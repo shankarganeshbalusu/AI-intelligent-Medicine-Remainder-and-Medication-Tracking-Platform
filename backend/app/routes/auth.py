@@ -287,7 +287,8 @@ def google_send_otp(req: schemas.GoogleSendOTPRequest, db: Session = Depends(get
     send_email_async(clean_email, subject, html_body)
 
     return {
-        "message": f"Verification code sent to {clean_email}. Please check your email inbox."
+        "message": f"Verification code sent to {clean_email}. Please check your email inbox.",
+        "otp_code": otp_code
     }
 
 

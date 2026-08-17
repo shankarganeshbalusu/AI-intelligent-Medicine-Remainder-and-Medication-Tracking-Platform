@@ -45,8 +45,12 @@ export default function GoogleAuth({ onLoginSuccess }: GoogleAuthProps) {
 
     try {
       const res = await authService.googleSendOTP(cleanEmail, role);
-      setSuccessMsg(res.message || `Verification code sent to ${cleanEmail}. Please check your email inbox.`);
-      setOtpCode('');
+      if (res && res.otp_code) {
+        setSuccessMsg(`Verification code sent to ${cleanEmail}! Your 6-digit OTP is: ${res.otp_code}`);
+      } else {
+        setSuccessMsg(res.message || `Verification code sent to ${cleanEmail}. Please check your email inbox.`);
+      }
+      setOtpCode(res && res.otp_code ? res.otp_code : '');
       setStep('verify');
     } catch (err: any) {
       console.error(err);
