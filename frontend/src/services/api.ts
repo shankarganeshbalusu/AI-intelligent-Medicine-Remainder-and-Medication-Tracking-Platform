@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const getApiUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL;
   if (envUrl && typeof envUrl === 'string' && envUrl.startsWith('http') && !envUrl.includes('_pp')) {
