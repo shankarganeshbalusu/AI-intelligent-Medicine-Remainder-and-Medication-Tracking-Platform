@@ -103,3 +103,4 @@
 [2026-08-16T21:00:21.704257] TO: maths4412@gmail.com | SUBJECT: PillSync — Medication Reminder
 [2026-08-16T21:00:27.205835] TO: maths4412@gmail.com | SUBJECT: PillSync — Medication Reminder
 [2026-08-16T21:00:31.076567] TO: maths4412@gmail.com | SUBJECT: PillSync — Medication Reminder
+[2026-08-17T13:56:04.061766] TO: maths4412@gmail.com | SUBJECT: Test Caregiver Notification
