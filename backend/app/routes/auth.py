@@ -103,34 +103,17 @@ def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
         
     user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
     
-    # Auto-create user account on the fly if not registered yet
     if not user:
-        user_name = clean_email.split('@')[0].replace('.', ' ').title()
-        user = models.User(
-            name=user_name,
-            email=clean_email,
-            notification_email=clean_email,
-            password_hash=auth.get_password_hash(clean_pwd if clean_pwd else "Password123!"),
-            role="patient",
-            is_verified=True
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password."
         )
-        db.add(user)
-        try:
-            db.commit()
-            db.refresh(user)
-        except Exception:
-            db.rollback()
-            user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
-    
-    if user:
-        pwd_valid = auth.verify_password(clean_pwd, user.password_hash)
-        if not pwd_valid:
-            user.password_hash = auth.get_password_hash(clean_pwd if clean_pwd else "Password123!")
-            db.commit()
-            
-        if not user.is_verified:
-            user.is_verified = True
-            db.commit()
+
+    if not auth.verify_password(clean_pwd, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password."
+        )
     
     # Generate JWT token
     access_token = auth.create_access_token(data={"sub": user.email, "role": user.role})

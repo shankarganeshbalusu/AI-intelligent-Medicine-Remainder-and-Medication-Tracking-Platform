@@ -108,11 +108,12 @@ export default function Profile() {
         role
       });
       setProfile(updated);
+      localStorage.setItem('pillsync_user', JSON.stringify(updated));
       localStorage.setItem('pillsync_user_role', updated.role);
       setProfileMessage({ text: `Profile updated! Active role set to ${updated.role.toUpperCase()} Mode.`, type: 'success' });
       setTimeout(() => {
         window.location.reload();
-      }, 1200);
+      }, 500);
     } catch (err: any) {
       setProfileMessage({
         text: err.response?.data?.detail || 'Failed to update profile.',
