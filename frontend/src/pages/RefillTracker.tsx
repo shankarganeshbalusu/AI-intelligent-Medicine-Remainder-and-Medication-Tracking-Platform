@@ -39,6 +39,16 @@ export default function RefillTracker() {
   const loadRefillData = async () => {
     try {
       setLoading(true);
+      const user = authService.getCurrentUser();
+      if (user?.role === 'caregiver') {
+        const links = await usersService.getAssociations().catch(() => []);
+        const activePatient = links.find(l => l.status === 'active');
+        if (activePatient) {
+          const meds = await medicinesService.getMedicines(activePatient.patient_id);
+          setMedicines(meds);
+          return;
+        }
+      }
       const meds = await medicinesService.getMedicines();
       setMedicines(meds);
     } catch (err) {

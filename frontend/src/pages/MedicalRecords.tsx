@@ -44,12 +44,22 @@ export default function MedicalRecords() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [me, medList, logList] = await Promise.all([
-        usersService.getMe(),
-        medicinesService.getMedicines(undefined, true),
-        medicinesService.getMedicationLogs()
-      ]);
+      const me = await usersService.getMe();
       setProfile(me);
+
+      let targetPatientId: number | undefined = undefined;
+      if (me.role === 'caregiver') {
+        const links = await usersService.getAssociations().catch(() => []);
+        const activeLink = links.find(l => l.status === 'active');
+        if (activeLink) {
+          targetPatientId = activeLink.patient_id;
+        }
+      }
+
+      const [medList, logList] = await Promise.all([
+        medicinesService.getMedicines(targetPatientId, true),
+        medicinesService.getMedicationLogs(targetPatientId)
+      ]);
       setMedicines(medList);
       setLogs(logList);
     } catch (err) {

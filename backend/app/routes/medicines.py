@@ -222,12 +222,39 @@ def get_today_reminders(
         user_id = current_user.id
 
     today_start = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-    
+
     db_reminders = db.query(models.Reminder).join(models.Medicine).filter(
         models.Medicine.user_id == user_id,
         models.Medicine.is_archived == False,
         models.Reminder.reminder_date == today_start
     ).all()
+
+    # Auto-generate today's scheduled reminders for active medicines if none exist for today
+    if not db_reminders:
+        active_meds = db.query(models.Medicine).filter(
+            models.Medicine.user_id == user_id,
+            models.Medicine.is_archived == False
+        ).all()
+        for med in active_meds:
+            times = med.custom_times.split(",") if med.custom_times else ["09:00"]
+            for t in times:
+                r = models.Reminder(
+                    medicine_id=med.id,
+                    dose_time=t.strip(),
+                    reminder_date=today_start,
+                    status="pending"
+                )
+                db.add(r)
+        try:
+            db.commit()
+        except Exception:
+            db.rollback()
+
+        db_reminders = db.query(models.Reminder).join(models.Medicine).filter(
+            models.Medicine.user_id == user_id,
+            models.Medicine.is_archived == False,
+            models.Reminder.reminder_date == today_start
+        ).all()
 
     res = []
     for r in db_reminders:

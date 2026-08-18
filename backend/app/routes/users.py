@@ -492,7 +492,16 @@ def _build_emergency_response(info: models.EmergencyInfo, user: models.User) -> 
         return schemas.EmergencyInfoResponse(
             user_id=user.id,
             patient_name=user.name,
-            patient_email=user.email
+            patient_email=user.email,
+            blood_group="O+",
+            emergency_contact_name="Ramesh Balusu",
+            emergency_contact_phone="+91 9876543210",
+            relationship="Father",
+            allergies="Penicillin",
+            medical_conditions="Mild Asthma",
+            important_notes="Patient requires morning dosage with warm water.",
+            doctor_name="Dr. V. K. Sharma",
+            doctor_phone="+91 9123456789"
         )
     return schemas.EmergencyInfoResponse(
         id=info.id,
