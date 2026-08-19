@@ -102,20 +102,22 @@ def get_admin_patients(
 ):
     query = db.query(models.User).filter(models.User.role == "patient")
 
-    if search:
+    if search and isinstance(search, str) and search.strip():
         search_fmt = f"%{search.strip()}%"
         query = query.filter(or_(
             models.User.name.ilike(search_fmt),
             models.User.email.ilike(search_fmt)
         ))
 
-    if status_filter == "verified":
-        query = query.filter(models.User.is_verified == True)
-    elif status_filter == "unverified":
-        query = query.filter(models.User.is_verified == False)
+    if status_filter and isinstance(status_filter, str):
+        if status_filter == "verified":
+            query = query.filter(models.User.is_verified == True)
+        elif status_filter == "unverified":
+            query = query.filter(models.User.is_verified == False)
 
     # Sorting
-    sort_col = getattr(models.User, sort_by, models.User.created_at)
+    sort_col_name = sort_by if isinstance(sort_by, str) else "created_at"
+    sort_col = getattr(models.User, sort_col_name, models.User.created_at)
     if order == "asc":
         query = query.order_by(sort_col.asc())
     else:
@@ -138,7 +140,7 @@ def get_admin_patients(
 
         # Last log activity
         last_log = db.query(models.MedicationLog).filter(models.MedicationLog.user_id == p.id).order_by(models.MedicationLog.logged_at.desc()).first()
-        last_activity = last_log.logged_at.isoformat() if last_log else p.created_at.isoformat()
+        last_activity = last_log.logged_at.isoformat() if last_log else (p.created_at.isoformat() if p.created_at else None)
 
         patient_list.append({
             "id": p.id,
@@ -245,17 +247,18 @@ def get_admin_caregivers(
 ):
     query = db.query(models.User).filter(models.User.role == "caregiver")
 
-    if search:
+    if search and isinstance(search, str) and search.strip():
         search_fmt = f"%{search.strip()}%"
         query = query.filter(or_(
             models.User.name.ilike(search_fmt),
             models.User.email.ilike(search_fmt)
         ))
 
-    if status_filter == "verified":
-        query = query.filter(models.User.is_verified == True)
-    elif status_filter == "unverified":
-        query = query.filter(models.User.is_verified == False)
+    if status_filter and isinstance(status_filter, str):
+        if status_filter == "verified":
+            query = query.filter(models.User.is_verified == True)
+        elif status_filter == "unverified":
+            query = query.filter(models.User.is_verified == False)
 
     total_count = query.count()
     offset = (page - 1) * limit
@@ -334,7 +337,7 @@ def get_admin_medicines(
 ):
     query = db.query(models.Medicine).join(models.User)
 
-    if search:
+    if search and isinstance(search, str) and search.strip():
         search_fmt = f"%{search.strip()}%"
         query = query.filter(or_(
             models.Medicine.name.ilike(search_fmt),
@@ -342,7 +345,7 @@ def get_admin_medicines(
             models.User.name.ilike(search_fmt)
         ))
 
-    if status_filter and status_filter.lower() != "all":
+    if status_filter and isinstance(status_filter, str) and status_filter.lower() != "all":
         if status_filter == "active":
             query = query.filter(models.Medicine.is_archived == False)
         elif status_filter == "completed":

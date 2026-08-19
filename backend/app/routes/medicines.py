@@ -493,16 +493,16 @@ def get_medication_logs(
     
     res = []
     for l in logs:
-        if not l.reminder or not l.reminder.medicine or l.reminder.medicine.is_archived:
-            continue
+        med_name = l.reminder.medicine.name if (l.reminder and l.reminder.medicine) else "Prescription Medicine"
+        dose_time = l.reminder.dose_time if l.reminder else "09:00"
         res.append({
             "id": l.id,
             "reminder_id": l.reminder_id,
             "user_id": l.user_id,
             "status": l.status,
             "logged_at": l.logged_at,
-            "medicine_name": l.reminder.medicine.name,
-            "dose_time": l.reminder.dose_time if l.reminder else "Unknown"
+            "medicine_name": med_name,
+            "dose_time": dose_time
         })
     return res
 
