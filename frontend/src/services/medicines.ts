@@ -1,9 +1,6 @@
 import api from './api';
 import { Medicine, MedicineCreateData, Reminder, MedicationLog } from '../types';
 
-import api from './api';
-import { Medicine, MedicineCreateData, Reminder, MedicationLog } from '../types';
-
 const getUserId = () => {
   return localStorage.getItem('pillsync_user_id') || 'guest';
 };
@@ -11,6 +8,11 @@ const getUserId = () => {
 const getCacheKey = (patientId?: number) => {
   const uid = patientId ? String(patientId) : getUserId();
   return `pillsync_medicines_cache_${uid}`;
+};
+
+const getRemindersCacheKey = (patientId?: number) => {
+  const uid = patientId ? String(patientId) : getUserId();
+  return `pillsync_reminders_cache_${uid}`;
 };
 
 const getLocalMedicines = (patientId?: number): Medicine[] => {
@@ -25,6 +27,21 @@ const getLocalMedicines = (patientId?: number): Medicine[] => {
 const saveLocalMedicines = (medicines: Medicine[], patientId?: number) => {
   try {
     localStorage.setItem(getCacheKey(patientId), JSON.stringify(medicines));
+  } catch (e) {}
+};
+
+const getLocalReminders = (patientId?: number): Reminder[] => {
+  try {
+    const raw = localStorage.getItem(getRemindersCacheKey(patientId));
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+const saveLocalReminders = (reminders: Reminder[], patientId?: number) => {
+  try {
+    localStorage.setItem(getRemindersCacheKey(patientId), JSON.stringify(reminders));
   } catch (e) {}
 };
 
@@ -65,33 +82,37 @@ export const medicinesService = {
   },
 
   async updateMedicine(id: number, data: MedicineCreateData): Promise<Medicine> {
+    // 1. Update local cache immediately
+    const current = getLocalMedicines();
+    const updatedList = current.map(m => {
+      if (m.id === id) {
+        return {
+          ...m,
+          name: data.name,
+          generic_name: data.generic_name || m.generic_name,
+          dosage: data.dosage,
+          quantity: data.quantity,
+          times_per_day: data.times_per_day,
+          duration_days: data.duration_days,
+          custom_times: data.custom_times || m.custom_times,
+          days_of_week: data.days_of_week || m.days_of_week,
+          food_relation: data.food_relation || m.food_relation,
+          notifications_enabled: data.notifications_enabled !== false
+        };
+      }
+      return m;
+    });
+    saveLocalMedicines(updatedList);
+
+    // 2. Transmit to backend
     try {
       const response = await api.put<Medicine>(`/medicines/${id}`, data);
       const updatedMed = response.data;
-      const current = getLocalMedicines();
-      const updatedList = current.map(m => m.id === id ? updatedMed : m);
-      saveLocalMedicines(updatedList);
+      const synced = updatedList.map(m => m.id === id ? updatedMed : m);
+      saveLocalMedicines(synced);
       return updatedMed;
     } catch (err) {
-      const current = getLocalMedicines();
-      const updatedList = current.map(m => {
-        if (m.id === id) {
-          return {
-            ...m,
-            name: data.name,
-            dosage: data.dosage,
-            quantity: data.quantity,
-            times_per_day: data.times_per_day,
-            duration_days: data.duration_days,
-            custom_times: data.custom_times || m.custom_times,
-            days_of_week: data.days_of_week || m.days_of_week,
-            food_relation: data.food_relation || m.food_relation,
-            notifications_enabled: data.notifications_enabled !== false
-          };
-        }
-        return m;
-      });
-      saveLocalMedicines(updatedList);
+      console.warn("Backend update failed, using local cache", err);
       return updatedList.find(m => m.id === id) as Medicine;
     }
   },
@@ -115,13 +136,8 @@ export const medicinesService = {
       const response = await api.get<Medicine[]>(url);
       const remote = response.data || [];
       if (remote.length > 0) {
-        // Merge remote and local to prevent data loss
-        const map = new Map<string, Medicine>();
-        local.forEach(m => map.set(m.name.toLowerCase(), m));
-        remote.forEach(m => map.set(m.name.toLowerCase(), m));
-        const merged = Array.from(map.values());
-        saveLocalMedicines(merged, patientId);
-        return merged;
+        saveLocalMedicines(remote, patientId);
+        return remote;
       }
       return local.length > 0 ? local : remote;
     } catch (err) {
@@ -130,12 +146,22 @@ export const medicinesService = {
   },
 
   async getTodayReminders(patientId?: number): Promise<Reminder[]> {
+    const localReminders = getLocalReminders(patientId);
     try {
       const url = patientId ? `/medicines/reminders/today?patient_id=${patientId}` : '/medicines/reminders/today';
       const response = await api.get<Reminder[]>(url);
-      if (response.data && response.data.length > 0) return response.data;
+      if (response.data && response.data.length > 0) {
+        // Merge with any local optimistic taken statuses if present
+        const remoteList = response.data;
+        saveLocalReminders(remoteList, patientId);
+        return remoteList;
+      }
     } catch (err) {}
     
+    if (localReminders.length > 0) {
+      return localReminders;
+    }
+
     // Construct reminders from persistent local medicines if backend is offline or cold
     const localMeds = getLocalMedicines(patientId);
     const reminders: Reminder[] = [];
@@ -150,13 +176,20 @@ export const medicinesService = {
           time: timeStr.trim(),
           status: 'pending',
           food_relation: m.food_relation || 'No Preference'
-        });
+        } as any);
       });
     });
+    saveLocalReminders(reminders, patientId);
     return reminders;
   },
 
   async updateReminderStatus(id: number, statusUpdate: 'taken' | 'missed'): Promise<Reminder> {
+    // 1. Update local reminders cache immediately
+    const localReminders = getLocalReminders();
+    const updatedLocal = localReminders.map(r => r.id === id ? { ...r, status: statusUpdate } : r);
+    saveLocalReminders(updatedLocal);
+
+    // 2. Transmit to backend
     try {
       const response = await api.put<Reminder>(`/medicines/reminders/${id}/status?status_update=${statusUpdate}`);
       return response.data;
@@ -169,7 +202,7 @@ export const medicinesService = {
         time: '09:00',
         status: statusUpdate,
         food_relation: 'No Preference'
-      };
+      } as any;
     }
   },
 

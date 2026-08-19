@@ -71,18 +71,8 @@ export default function Medicines() {
     try {
       setLoading(true);
       if (isPatient) {
-        let list = await medicinesService.getMedicines();
-        if (list && list.length > 0) {
-          setMedicines(list);
-          localStorage.setItem('pillsync_cached_medicines', JSON.stringify(list));
-        } else {
-          const cached = localStorage.getItem('pillsync_cached_medicines');
-          if (cached) {
-            try { setMedicines(JSON.parse(cached)); } catch (e) { setMedicines([]); }
-          } else {
-            setMedicines(list || []);
-          }
-        }
+        const list = await medicinesService.getMedicines();
+        setMedicines(list || []);
       } else {
         const associations = await usersService.getAssociations();
         const activeLinks = associations.filter(a => a.status === 'active');
@@ -91,15 +81,11 @@ export default function Medicines() {
         if (activeLinks.length > 0) {
           setSelectedPatientId(activeLinks[0].patient_id);
           const list = await medicinesService.getMedicines(activeLinks[0].patient_id);
-          setMedicines(list);
+          setMedicines(list || []);
         }
       }
     } catch (err) {
       console.error('Failed to load medicines data', err);
-      const cached = localStorage.getItem('pillsync_cached_medicines');
-      if (cached) {
-        try { setMedicines(JSON.parse(cached)); } catch (e) {}
-      }
     } finally {
       setLoading(false);
     }
