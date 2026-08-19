@@ -116,7 +116,7 @@ function App() {
         </div>
 
         <Sidebar user={user} onLogout={handleAuthChange} onAskAI={() => setChatOpen(prev => !prev)} />
-        <main className={`flex-grow min-h-screen py-8 px-4 sm:px-6 relative z-10 transition-all duration-300 ${user ? 'md:pl-56' : ''}`}>
+        <main className={`flex-grow min-h-screen py-8 pb-36 px-4 sm:px-6 relative z-10 transition-all duration-300 ${user ? 'md:pl-56' : ''}`}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route 

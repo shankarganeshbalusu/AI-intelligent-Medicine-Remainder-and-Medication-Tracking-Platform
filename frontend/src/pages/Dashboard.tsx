@@ -448,20 +448,20 @@ export default function Dashboard() {
                     const isMissed = rem.status === 'missed';
 
                     return (
-                      <div key={rem.id} className="p-4 border border-cyan-500/20 rounded-2xl flex items-center justify-between hover:bg-slate-800/60 bg-slate-900/60 transition-all">
+                      <div key={rem.id} className="p-4 border border-cyan-500/20 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-800/60 bg-slate-900/60 transition-all">
                         <div className="flex items-center gap-3.5">
-                          <div className={`p-2.5 rounded-xl text-xs font-black ${
+                          <div className={`p-2.5 rounded-xl text-xs font-black shrink-0 ${
                             isTaken
                               ? 'bg-green-500/20 text-green-400 border border-green-500/30'
                               : isMissed
                               ? 'bg-red-500/20 text-red-400 border border-red-500/30'
                               : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
                           }`}>
-                            {formatTimeToShow(rem.dose_time)}
+                            {formatTimeToShow(rem.dose_time || rem.time || '')}
                           </div>
-                          <div>
-                            <h5 className="font-black text-white text-sm flex items-center gap-2">
-                              {rem.medicine_name}
+                          <div className="min-w-0">
+                            <h5 className="font-black text-white text-sm flex flex-wrap items-center gap-1.5">
+                              <span>{rem.medicine_name}</span>
                               {rem.medicine_food_relation && (
                                 <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ${
                                   rem.medicine_food_relation.toLowerCase().includes('before')
@@ -474,47 +474,66 @@ export default function Dashboard() {
                                 </span>
                               )}
                             </h5>
-                            <p className="text-xs text-slate-300 font-semibold mt-0.5">Dosage: {rem.medicine_dosage}</p>
+                            <p className="text-xs text-slate-300 font-semibold mt-0.5">Dosage: {rem.medicine_dosage || rem.dosage || '1 Dose'}</p>
                           </div>
                         </div>
 
                         {/* Action buttons (Patients only) */}
                         {isPatient ? (
                           isPending ? (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2.5 self-end sm:self-auto shrink-0">
                               <button
-                                onClick={() => handleActionDose(rem.id, 'taken')}
-                                disabled={actioningId !== null}
-                                className="p-2 rounded-lg bg-green-500/20 hover:bg-green-500/30 border border-green-500/40 text-green-300 transition-colors flex items-center justify-center cursor-pointer shadow-[0_0_10px_rgba(16,185,129,0.3)]"
-                                title="Mark Taken"
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleActionDose(rem.id, 'taken');
+                                }}
+                                disabled={actioningId === rem.id}
+                                className="h-10 px-3.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-95 border border-emerald-500/40 text-emerald-300 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(16,185,129,0.25)] touch-manipulation font-bold text-xs"
+                                title="Mark Dose as Taken"
                               >
-                                <Check className="h-4.5 w-4.5" />
+                                <Check className="h-4 w-4" />
+                                <span>Take</span>
                               </button>
                               <button
-                                onClick={() => handleActionDose(rem.id, 'missed')}
-                                disabled={actioningId !== null}
-                                className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 transition-colors flex items-center justify-center cursor-pointer shadow-[0_0_10px_rgba(239,68,68,0.3)]"
-                                title="Mark Missed"
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleActionDose(rem.id, 'missed');
+                                }}
+                                disabled={actioningId === rem.id}
+                                className="h-10 px-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 active:scale-95 border border-red-500/40 text-red-300 transition-all flex items-center justify-center gap-1 cursor-pointer shadow-[0_0_12px_rgba(239,68,68,0.25)] touch-manipulation font-bold text-xs"
+                                title="Mark Dose as Missed"
                               >
-                                <X className="h-4.5 w-4.5" />
+                                <X className="h-4 w-4" />
+                                <span>Miss</span>
                               </button>
                             </div>
                           ) : (
-                            <button
-                              onClick={() => handleActionDose(rem.id, isTaken ? 'missed' : 'taken')}
-                              className={`text-xs px-3 py-1 rounded-full font-black border uppercase tracking-wider cursor-pointer hover:opacity-80 transition-all ${
-                                isTaken
-                                  ? 'bg-green-500/20 border-green-500/40 text-green-300'
-                                  : 'bg-red-500/20 border-red-500/40 text-red-300'
-                              }`}
-                              title="Click to toggle dose status"
-                            >
-                              {isTaken ? '✓ Taken' : '✕ Missed'}
-                            </button>
+                            <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleActionDose(rem.id, isTaken ? 'missed' : 'taken');
+                                }}
+                                className={`text-xs px-3.5 py-1.5 rounded-xl font-black border uppercase tracking-wider cursor-pointer hover:opacity-90 active:scale-95 transition-all touch-manipulation flex items-center gap-1.5 ${
+                                  isTaken
+                                    ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                                    : 'bg-red-500/20 border-red-500/50 text-red-300 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
+                                }`}
+                                title="Click to toggle status"
+                              >
+                                {isTaken ? '✓ Taken' : '✕ Missed'}
+                              </button>
+                            </div>
                           )
                         ) : (
                           /* Caregiver Read-only tags */
-                          <span className={`text-xs px-3 py-1 rounded-full font-black border uppercase tracking-wider ${
+                          <span className={`text-xs px-3 py-1 rounded-full font-black border uppercase tracking-wider self-end sm:self-auto shrink-0 ${
                             isTaken
                               ? 'bg-green-500/20 border-green-500/40 text-green-300'
                               : isMissed

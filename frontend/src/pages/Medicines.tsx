@@ -247,6 +247,10 @@ export default function Medicines() {
   };
 
   const toggleNotifications = async (med: Medicine) => {
+    const newVal = !(med.notifications_enabled !== false);
+    // Instant optimistic UI update
+    setMedicines(prev => prev.map(m => m.id === med.id ? { ...m, notifications_enabled: newVal } : m));
+    
     try {
       const updatedPayload = {
         name: med.name,
@@ -258,13 +262,13 @@ export default function Medicines() {
         custom_times: med.custom_times || '',
         days_of_week: med.days_of_week || 'Daily',
         food_relation: med.food_relation || 'No Preference',
-        notifications_enabled: !(med.notifications_enabled !== false)
+        notifications_enabled: newVal
       };
       await medicinesService.updateMedicine(med.id, updatedPayload);
-      const list = await medicinesService.getMedicines();
-      setMedicines(list);
     } catch (err) {
       console.error('Failed to toggle notifications', err);
+      // Revert if error
+      setMedicines(prev => prev.map(m => m.id === med.id ? { ...m, notifications_enabled: !newVal } : m));
     }
   };
 
@@ -810,18 +814,24 @@ const RESTRICTED_SUBSTANCES = [
                           Email Notifications:
                         </span>
                         
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 relative z-20">
                           <span className={`text-[10px] font-black uppercase tracking-wider ${med.notifications_enabled !== false ? 'text-cyan-300' : 'text-slate-400'}`}>
                             {med.notifications_enabled !== false ? 'ON' : 'OFF'}
                           </span>
                           <button
-                            onClick={() => toggleNotifications(med)}
-                            className={`relative inline-flex items-center medical-toggle-track ${
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleNotifications(med);
+                            }}
+                            className={`relative inline-flex items-center medical-toggle-track cursor-pointer touch-manipulation z-20 p-1 ${
                               med.notifications_enabled !== false ? 'on' : 'off'
                             }`}
+                            style={{ minWidth: '46px', minHeight: '26px' }}
                             title={med.notifications_enabled !== false ? "Click to disable notifications" : "Click to enable notifications"}
                           >
-                            <span className={`inline-block w-4 h-4 rounded-full bg-white shadow-md transform transition-transform duration-300 ${
+                            <span className={`inline-block w-4 h-4 rounded-full bg-white shadow-md transform transition-transform duration-300 pointer-events-none ${
                               med.notifications_enabled !== false ? 'translate-x-5' : 'translate-x-1'
                             }`} />
                           </button>

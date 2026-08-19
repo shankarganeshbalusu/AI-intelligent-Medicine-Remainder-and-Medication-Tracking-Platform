@@ -386,10 +386,19 @@ def forgot_password(req: schemas.ForgotPasswordRequest, db: Session = Depends(ge
 
 @router.post("/reset-password")
 def reset_password(req: schemas.ResetPasswordRequest, db: Session = Depends(get_db)):
+    clean_email = (req.email or "").strip().lower()
+    clean_token = (req.token or "").strip()
+    
     db_token = db.query(models.PasswordResetToken).filter(
-        models.PasswordResetToken.token == req.token,
-        models.PasswordResetToken.email == req.email
+        models.PasswordResetToken.token == clean_token,
+        func.lower(models.PasswordResetToken.email) == clean_email
     ).first()
+    
+    if not db_token:
+        # Fallback check by token in case email format had slight whitespace/case difference
+        db_token = db.query(models.PasswordResetToken).filter(
+            models.PasswordResetToken.token == clean_token
+        ).first()
     
     if not db_token:
         raise HTTPException(
@@ -405,17 +414,20 @@ def reset_password(req: schemas.ResetPasswordRequest, db: Session = Depends(get_
             detail="Password reset token has expired."
         )
         
-    user = db.query(models.User).filter(models.User.email == req.email).first()
+    user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
+    if not user and db_token.email:
+        user = db.query(models.User).filter(func.lower(models.User.email) == db_token.email.strip().lower()).first()
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found."
+            detail="User account not found."
         )
         
-    user.password_hash = auth.get_password_hash(req.new_password)
+    user.password_hash = auth.get_password_hash(req.new_password.strip())
     
     db.delete(db_token)
     db.commit()
     
-    return {"status": "Password reset successfully."}
+    return {"status": "Password reset successfully. You can now log in with your new password."}
 

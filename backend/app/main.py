@@ -35,9 +35,10 @@ def seed_initial_database():
             db.commit()
             db.refresh(admin_user)
         else:
-            admin_user.password_hash = app_auth.get_password_hash("AdminPillSync123!")
-            admin_user.is_verified = True
-            db.commit()
+            # Preserve user's existing password_hash if they changed it
+            if not admin_user.is_verified:
+                admin_user.is_verified = True
+                db.commit()
 
         # 2. Seed Primary Patients
         patient_emails = ["shankarganeshbalusu@gmail.com", "sbalusu4@gitam.in"]
@@ -57,9 +58,10 @@ def seed_initial_database():
                 db.commit()
                 db.refresh(p_user)
             else:
-                p_user.password_hash = app_auth.get_password_hash("Patient123!")
-                p_user.is_verified = True
-                db.commit()
+                # Preserve user's existing password_hash if they changed it
+                if not p_user.is_verified:
+                    p_user.is_verified = True
+                    db.commit()
             patient_users.append(p_user)
 
         # 3. Seed Caregiver
@@ -77,9 +79,10 @@ def seed_initial_database():
             db.commit()
             db.refresh(caregiver_user)
         else:
-            caregiver_user.password_hash = app_auth.get_password_hash("Caregiver123!")
-            caregiver_user.is_verified = True
-            db.commit()
+            # Preserve caregiver's existing password_hash if they changed it
+            if not caregiver_user.is_verified:
+                caregiver_user.is_verified = True
+                db.commit()
 
         # 4. Link All Patients with Caregiver
         if caregiver_user:
@@ -133,7 +136,7 @@ def seed_initial_database():
                     db.refresh(m)
                     created_medicines.append(m)
 
-                # Seed Reminders & Logs for these medicines
+                # Seed Reminders (all pending so user can mark them)
                 for idx, m in enumerate(created_medicines):
                     times = m.custom_times.split(",") if m.custom_times else ["09:00"]
                     for t in times:
@@ -141,22 +144,11 @@ def seed_initial_database():
                             medicine_id=m.id,
                             dose_time=t.strip(),
                             reminder_date=today_date,
-                            status="taken" if idx < 4 else "pending",
+                            status="pending",
                             created_at=now_dt
                         )
                         db.add(rem)
                         db.commit()
-                        db.refresh(rem)
-
-                        if idx < 4:
-                            log = models.MedicationLog(
-                                reminder_id=rem.id,
-                                user_id=p_user.id,
-                                status="taken",
-                                logged_at=now_dt - datetime.timedelta(hours=(6 - idx))
-                            )
-                            db.add(log)
-                            db.commit()
 
             # Seed Emergency Info
             emg = db.query(models.EmergencyInfo).filter(models.EmergencyInfo.user_id == p_user.id).first()
