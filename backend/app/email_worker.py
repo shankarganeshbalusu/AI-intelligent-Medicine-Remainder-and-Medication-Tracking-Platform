@@ -25,12 +25,12 @@ LOGIN_URL = FRONTEND_URL + "/login"
 import threading
 
 def send_email_async(to_email: str, subject: str, html_body: str):
-    """Dispatches email sending in a non-blocking background thread so API calls return instantly (<0.1s)."""
-    threading.Thread(target=send_email_notification, args=(to_email, subject, html_body), daemon=True).start()
+    """Sends email directly and immediately so it is guaranteed delivered before serverless execution completes."""
+    send_email_notification(to_email, subject, html_body)
 
 
 def send_email_notification(to_email: str, subject: str, html_body: str):
-    """Sends email directly via fast native Python smtplib with Node.js fallback and local outbox audit logging."""
+    """Sends email directly via fast native Python smtplib with direct SMTP_SSL / STARTTLS delivery."""
     smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
     smtp_port = int(os.getenv("SMTP_PORT", "587"))
     smtp_user = os.getenv("SMTP_USER") or "maths4412@gmail.com"
@@ -47,23 +47,42 @@ def send_email_notification(to_email: str, subject: str, html_body: str):
     except Exception:
         pass
 
-    # 1. Native Python smtplib (Fast direct delivery <0.5s)
+    # 1. Native Python smtplib (Direct fast delivery via 587 STARTTLS)
     try:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
         msg["From"] = f"PillSync Automated System <{sender_email}>"
         msg["To"] = to_email
-        msg["Reply-To"] = to_email
+        msg["Reply-To"] = sender_email
         msg.attach(MIMEText(html_body, "html"))
 
-        with smtplib.SMTP(smtp_server, smtp_port, timeout=10) as server:
+        with smtplib.SMTP(smtp_server, smtp_port, timeout=8) as server:
+            server.ehlo()
             server.starttls()
+            server.ehlo()
             server.login(smtp_user, smtp_password)
             server.sendmail(sender_email, [to_email], msg.as_string())
-        print(f"[NATIVE FAST SMTP] Email sent instantly to {to_email}")
+        print(f"[NATIVE FAST SMTP] Email sent successfully to {to_email}")
         return
     except Exception as py_err:
-        print(f"[NATIVE SMTP WARNING] {py_err}. Trying Node fallback...")
+        print(f"[NATIVE SMTP WARNING] Port {smtp_port} failed: {py_err}. Trying Port 465 SSL...")
+
+    # 1b. Fallback to direct SMTP_SSL on Port 465
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"] = f"PillSync Automated System <{sender_email}>"
+        msg["To"] = to_email
+        msg["Reply-To"] = sender_email
+        msg.attach(MIMEText(html_body, "html"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=8) as server:
+            server.login(smtp_user, smtp_password)
+            server.sendmail(sender_email, [to_email], msg.as_string())
+        print(f"[NATIVE SMTP_SSL 465] Email sent successfully to {to_email}")
+        return
+    except Exception as ssl_err:
+        print(f"[SMTP SSL 465 WARNING] {ssl_err}. Trying Node fallback...")
 
     # 2. Subprocess fallback (Nodemailer)
     try:
@@ -79,7 +98,8 @@ def send_email_notification(to_email: str, subject: str, html_body: str):
             capture_output=True,
             text=True,
             cwd=backend_dir,
-            check=True
+            check=True,
+            timeout=10
         )
         print(f"[NODEMAILER FALLBACK]\n{result.stdout}")
     except Exception as node_err:

@@ -52,18 +52,26 @@ def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
 
-    # Dispatch verification link email in non-blocking background thread
-    verify_link = f"http://localhost:5173/verify-email?token={v_token}&email={user_in.email}"
+    # Dispatch verification link email directly and instantly
+    from app.email_worker import FRONTEND_URL, send_email_notification
+    verify_link = f"{FRONTEND_URL}/verify-email?token={v_token}&email={clean_email}"
     subject = "✉️ PillSync: Verify Your Email Address"
     html_body = f"""
-    <p>Hello <strong>{new_user.name}</strong>,</p>
-    <p>Thank you for signing up on PillSync! Please click the secure link below to verify your email address and activate your account:</p>
-    <p><a href="{verify_link}" style="display:inline-block; background-color:#06b6d4; color:#ffffff; padding:10px 20px; border-radius:10px; text-decoration:none; font-weight:bold;">Verify Email Address</a></p>
-    <p>Or copy and paste this link in your browser:</p>
-    <p><a href="{verify_link}">{verify_link}</a></p>
-    <p><em>If you did not sign up for PillSync, please ignore this email.</em></p>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff;">
+      <h2 style="color: #0891b2; margin-top: 0;">✉️ Verify Your PillSync Account</h2>
+      <p style="color: #334155; font-size: 15px;">Hello <strong>{new_user.name}</strong>,</p>
+      <p style="color: #334155; font-size: 14px; line-height: 1.5;">Thank you for signing up on PillSync! Please click the button below to verify your email address and activate your account:</p>
+      <p style="margin: 24px 0;">
+        <a href="{verify_link}" style="background-color: #06b6d4; color: #ffffff; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">Verify Email Address</a>
+      </p>
+      <p style="color: #64748b; font-size: 12px;">Or copy and paste this link in your browser:<br><a href="{verify_link}" style="color: #0891b2;">{verify_link}</a></p>
+      <p style="color: #94a3b8; font-size: 11px; margin-top: 24px; border-top: 1px solid #f1f5f9; padding-top: 12px;">If you did not sign up for PillSync, please ignore this email.</p>
+    </div>
     """
-    threading.Thread(target=_async_send_email, args=(new_user.email, subject, html_body), daemon=True).start()
+    try:
+        send_email_notification(clean_email, subject, html_body)
+    except Exception as email_err:
+        print(f"[REGISTER EMAIL WARNING] {email_err}")
 
     return new_user
 
@@ -351,20 +359,27 @@ def forgot_password(req: schemas.ForgotPasswordRequest, db: Session = Depends(ge
     db.add(db_token)
     db.commit()
     
-    from app.email_worker import FRONTEND_URL, send_email_async
+    from app.email_worker import FRONTEND_URL, send_email_notification
     reset_link = f"{FRONTEND_URL}/reset-password?token={token}&email={clean_email}"
     
     subject = "🔑 PillSync: Password Reset Request"
     html_body = f"""
-    <p>Hello <strong>{user.name}</strong>,</p>
-    <p>We received a request to reset your password on the PillSync platform.</p>
-    <p>Please click the link below to set a new password:</p>
-    <p><a href="{reset_link}">{reset_link}</a></p>
-    <p>This link will expire in 15 minutes.</p>
-    <p>If you did not request this, you can ignore this email.</p>
-    <p><em>PillSync Platform Support</em></p>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff;">
+      <h2 style="color: #0891b2; margin-top: 0;">🔑 PillSync Password Reset</h2>
+      <p style="color: #334155; font-size: 15px;">Hello <strong>{user.name}</strong>,</p>
+      <p style="color: #334155; font-size: 14px; line-height: 1.5;">We received a request to reset your password on the PillSync platform. Please click the button below to set a new password:</p>
+      <p style="margin: 24px 0;">
+        <a href="{reset_link}" style="background-color: #06b6d4; color: #ffffff; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">Reset My Password</a>
+      </p>
+      <p style="color: #64748b; font-size: 12px;">Or copy and paste this link in your browser:<br><a href="{reset_link}" style="color: #0891b2;">{reset_link}</a></p>
+      <p style="color: #ea580c; font-size: 13px; font-weight: 600; margin-top: 18px;">⏳ This password reset link expires in 15 minutes.</p>
+      <p style="color: #94a3b8; font-size: 11px; margin-top: 24px; border-top: 1px solid #f1f5f9; padding-top: 12px;">If you did not request a password reset, you can safely ignore this email.</p>
+    </div>
     """
-    send_email_async(clean_email, subject, html_body)
+    try:
+        send_email_notification(clean_email, subject, html_body)
+    except Exception as err:
+        print(f"[FORGOT PWD EMAIL ERROR] {err}")
     
     return {"status": "Password reset email sent."}
 
